@@ -18,11 +18,11 @@ const TripPlanner = () => {
 
   useEffect(() => {
     // Fetch spots and experiences from the backend
-    axios.get('${process.env.REACT_APP_API_URL}/api/spots')
+    axios.get(`http://localhost:5000/api/spots`)
       .then(res => setSpots(res.data))
       .catch(err => console.error("Error fetching spots:", err));
 
-    axios.get('${process.env.REACT_APP_API_URL}/api/experiences')
+    axios.get(`http://localhost:5000/api/experiences`)
       .then(res => setExperiences(res.data))
       .catch(err => console.error("Error fetching experiences:", err));
   }, []);

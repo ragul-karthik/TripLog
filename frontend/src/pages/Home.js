@@ -8,17 +8,19 @@ const Home = () => {
   const [hoveredSpot, setHoveredSpot] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Use environment variable or fallback to localhost
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   useEffect(() => {
-    axios.get('${process.env.REACT_APP_API_URL}/api/spots')
+    axios.get(`${API_URL}/api/spots`)
       .then(res => setSpots(res.data))
       .catch(err => console.error("Error fetching spots:", err));
 
-    axios.get('${process.env.REACT_APP_API_URL}/api/experiences')
+    axios.get(`${API_URL}/api/experiences`)
       .then(res => setExperiences(res.data))
       .catch(err => console.error("Error fetching experiences:", err));
-  }, []);
+  }, [API_URL]);
 
-  // Filter spots based on the search query
   const filteredSpots = spots.filter(spot => 
     spot.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
     spot.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -36,7 +38,6 @@ const Home = () => {
     <div className="home">
       <h1 className="title">Tourist Spots</h1>
 
-      {/* Search bar */}
       <div className="search-container">
         <input
           type="text"

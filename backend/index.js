@@ -14,16 +14,11 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB using the URI from the .env file
+// Connect to local MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI) // MONGO_URI should be: mongodb://localhost:27017/triplog
   .then(() => console.log("MongoDB connected"))
-  .catch((err) =>
-    console.error("MongoDB connection error:", err)
-  );
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // ------------------------- API Routes -------------------------
 
@@ -47,7 +42,7 @@ app.get("/api/experiences", async (req, res) => {
   }
 });
 
-// Add a new spot (expects JSON data in request body)
+// Add a new spot
 app.post("/api/spots", async (req, res) => {
   try {
     const newSpot = new Spot(req.body);
@@ -58,7 +53,7 @@ app.post("/api/spots", async (req, res) => {
   }
 });
 
-// Add a new experience (expects JSON data in request body)
+// Add a new experience
 app.post("/api/experiences", async (req, res) => {
   try {
     const newExperience = new Experience(req.body);
@@ -69,7 +64,7 @@ app.post("/api/experiences", async (req, res) => {
   }
 });
 
-// Mark an experience as useful (only once per experience)
+// Mark an experience as useful
 app.post("/api/experiences/:id/useful", async (req, res) => {
   try {
     const { id } = req.params;
@@ -105,7 +100,7 @@ app.post("/api/experiences/:id/save", async (req, res) => {
   }
 });
 
-// Fetch all experiences that have been marked as saved
+// Fetch all saved experiences
 app.get("/api/experiences/saved", async (req, res) => {
   try {
     const experiences = await Experience.find({ saved: true });
@@ -115,7 +110,7 @@ app.get("/api/experiences/saved", async (req, res) => {
   }
 });
 
-// (Optional) Add a comment to an experience
+// Add a comment to an experience
 app.post("/api/experiences/:id/comment", async (req, res) => {
   try {
     const { id } = req.params;

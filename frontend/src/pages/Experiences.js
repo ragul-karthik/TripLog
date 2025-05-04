@@ -11,21 +11,34 @@ const Experiences = () => {
     image: '',
     tags: ''
   });
+  const [sortOption, setSortOption] = useState('date'); // Default sorting by date
 
   useEffect(() => {
     fetchExperiences();
-  }, []);
+  }, [sortOption]); // Fetch experiences whenever the sort option changes
 
   const fetchExperiences = () => {
-    axios.get('${process.env.REACT_APP_API_URL}/api/experiences')
-      .then(res => setExperiences(res.data))
+    axios.get(`http://localhost:5000/api/experiences`)
+      .then(res => {
+        const sortedExperiences = sortExperiences(res.data);
+        setExperiences(sortedExperiences);
+      })
       .catch(err => console.error("Error fetching experiences:", err));
   };
 
   const fetchSavedExperiences = () => {
-    axios.get('${process.env.REACT_APP_API_URL}/api/experiences/saved')
+    axios.get(`http://localhost:5000/api/experiences/saved`)
       .then(res => setSavedExperiences(res.data))
       .catch(err => console.error("Error fetching saved experiences:", err));
+  };
+
+  const sortExperiences = (experiences) => {
+    if (sortOption === 'date') {
+      return experiences.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by date (newest first)
+    } else if (sortOption === 'popularity') {
+      return experiences.sort((a, b) => b.usefulVotes - a.usefulVotes); // Sort by popularity (most useful votes)
+    }
+    return experiences; // Return the same list if no sort option
   };
 
   const handleChange = e => {
@@ -35,7 +48,7 @@ const Experiences = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const payload = { ...formData, tags: formData.tags.split(',').map(t => t.trim()) };
-    axios.post('${process.env.REACT_APP_API_URL}/api/experiences', payload)
+    axios.post(`http://localhost:5000/api/experiences`, payload)
       .then(() => {
         setFormData({ username: '', title: '', caption: '', image: '', tags: '' });
         fetchExperiences();
@@ -44,7 +57,7 @@ const Experiences = () => {
   };
 
   const markUseful = id => {
-    axios.post(`${process.env.REACT_APP_API_URL}/api/experiences/${id}/useful`)
+    axios.post(`http://localhost:5000/api/experiences/${id}/useful`)
       .then(fetchExperiences)
       .catch(err => console.error("Error marking useful:", err));
   };
@@ -55,13 +68,14 @@ const Experiences = () => {
       <div className="experiences-sidebar">
         <div className="sort-options">
           <h3 className="text-lg font-semibold">Sort by:</h3>
-          <select className="modern-dropdown" >
+          <select
+            className="modern-dropdown"
+            value={sortOption}
+            onChange={e => setSortOption(e.target.value)}
+          >
             <option value="date">Date</option>
             <option value="popularity">Popularity</option>
           </select>
-        </div>
-        <div className="view-saved mt-4">
-          <button className="modern-button" onClick={fetchSavedExperiences}>View Saved Posts</button>
         </div>
       </div>
 
