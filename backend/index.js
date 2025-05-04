@@ -19,7 +19,7 @@ mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  })``````````````````````````````
+  })
   .then(() => console.log("MongoDB connected"))
   .catch((err) =>
     console.error("MongoDB connection error:", err)
@@ -133,14 +133,6 @@ app.post("/api/experiences/:id/comment", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Could not add comment." });
   }
-});
-
-const path = require("path");
-
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
 // -------------------------------------------------------------------
