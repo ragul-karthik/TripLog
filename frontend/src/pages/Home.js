@@ -9,11 +9,11 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/spots')
+    axios.get('${process.env.REACT_APP_API_URL}/api/spots')
       .then(res => setSpots(res.data))
       .catch(err => console.error("Error fetching spots:", err));
 
-    axios.get('http://localhost:5000/api/experiences')
+    axios.get('${process.env.REACT_APP_API_URL}/api/experiences')
       .then(res => setExperiences(res.data))
       .catch(err => console.error("Error fetching experiences:", err));
   }, []);

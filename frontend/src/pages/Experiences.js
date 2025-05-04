@@ -17,13 +17,13 @@ const Experiences = () => {
   }, []);
 
   const fetchExperiences = () => {
-    axios.get('http://localhost:5000/api/experiences')
+    axios.get('${process.env.REACT_APP_API_URL}/api/experiences')
       .then(res => setExperiences(res.data))
       .catch(err => console.error("Error fetching experiences:", err));
   };
 
   const fetchSavedExperiences = () => {
-    axios.get('http://localhost:5000/api/experiences/saved')
+    axios.get('${process.env.REACT_APP_API_URL}/api/experiences/saved')
       .then(res => setSavedExperiences(res.data))
       .catch(err => console.error("Error fetching saved experiences:", err));
   };
@@ -35,7 +35,7 @@ const Experiences = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const payload = { ...formData, tags: formData.tags.split(',').map(t => t.trim()) };
-    axios.post('http://localhost:5000/api/experiences', payload)
+    axios.post('${process.env.REACT_APP_API_URL}/api/experiences', payload)
       .then(() => {
         setFormData({ username: '', title: '', caption: '', image: '', tags: '' });
         fetchExperiences();
@@ -44,7 +44,7 @@ const Experiences = () => {
   };
 
   const markUseful = id => {
-    axios.post(`http://localhost:5000/api/experiences/${id}/useful`)
+    axios.post(`${process.env.REACT_APP_API_URL}/api/experiences/${id}/useful`)
       .then(fetchExperiences)
       .catch(err => console.error("Error marking useful:", err));
   };
